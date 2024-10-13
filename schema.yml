@@ -1,0 +1,70 @@
+version: 2
+
+models:
+  - name: Fact_Sales
+    columns:
+      - name: ID
+        description: "Unique identifier for the sales record"
+        tests:
+          - unique
+          - not_null
+      - name: Order_ID
+        description: "Order identifier"
+      - name: Product_ID
+        description: "Product identifier"
+      - name: Quantity
+        description: "Quantity of the product sold"
+      - name: Amount
+        description: "Total amount of the sale"
+      - name: City
+        description: "City where the order was shipped"
+      - name: State
+        description: "State where the order was shipped"
+      - name: Pincode
+        description: "Postal code of the shipping address"
+      - name: Promotion_ID
+        description: "Identifier for any promotions applied to the order"
+    config:
+      materialized: table
+      alias: F_Sales
+
+  - name: Dimension_Shipment
+    columns:
+      - name: Order_ID
+        tests:
+          - unique
+          - not_null
+      - name: Date
+      - name: Fulfillment
+      - name: Sales_Channel
+      - name: Ship_Service_Level
+      - name: Fulfilled_By
+      - name: Order_Status
+      - name: Shipment_Status
+      - name: B2B
+    config:
+      materialized: table
+      alias: Dim_Shipment
+
+  - name: Dimension_Products
+    columns:
+      - name: Product_ID
+        tests:
+          - unique
+          - not_null
+      - name: Style
+      - name: SKU
+        tests:
+          - unique
+          - not_null
+      - name: Category
+      - name: Size
+    config:
+      materialized: table
+      alias: Dim_Products
+
+sources:
+  - name: fedex
+    schema: fedex_assignment
+    tables:
+      - name: cleaned_data
